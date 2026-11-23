@@ -6,8 +6,8 @@ if (length(missing)) {
 }
 library(shiny)
 
-for (file in c("data", "geography", "profiles", "bubble", "ridge", "partners", "road")) {
-  source(paste0(file, ".R"), local = TRUE, encoding = "UTF-8")
+for (file in c("data.R", "geography.R", "charts.R", "partners.R")) {
+  source(file.path("scripts", file), local = TRUE, encoding = "UTF-8")
 }
 
 chart_names <- c("Carte mondiale", "Prix par région", "Radar régional", "Bulles 3D",
