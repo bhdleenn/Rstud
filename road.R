@@ -13,13 +13,14 @@ road_view <- function(partners) {
                      31 + (i %% 4L) * 10L, 4 + (i %% 3L) * 4L)
     tags$div(class = "racer", style = style,
       title = paste(row$brand_name, "—", format_number(row$score, 2), "/ 100"),
-      tags$div(class = "racer-label", paste0(i, ". ", row$brand_name)),
+      tags$div(class = "racer-label", paste0(i, ". ", row$brand_name, " · ", format_number(row$score, 1))),
       tags$div(class = "car", `aria-hidden` = "true", tags$span(class = "car-roof"))
     )
   })
   tags$div(
-    tags$p(class = "hint", "Les véhicules les plus à droite occupent les premières places."),
-    tags$button(type = "button", id = "replay-road", class = "control", "Rejouer · 5 s"),
+    tags$div(class = "road-toolbar",
+      tags$p(class = "hint", "Les véhicules les plus à droite occupent les premières places."),
+      tags$button(type = "button", id = "replay-road", class = "control", "Rejouer · 5 s")),
     tags$div(class = "track-scroll",
       tags$div(id = "track", class = "track", role = "img",
         `aria-label` = paste("Classement sur la route :", paste(d$brand_name, collapse = ", ")), cars))

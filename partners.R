@@ -25,7 +25,10 @@ partner_table <- function(d) {
       tags$td(row$rank),
       tags$td(tags$button(type = "button", class = "brand-link", row$brand_name)),
       tags$td(row$continent), tags$td(row$country),
-      tags$td(format_number(row$score, 2)),
+      tags$td(tags$div(class = "score",
+        tags$span(class = "score-track", `aria-hidden` = "true",
+          tags$span(class = "score-fill", style = sprintf("width: %.2f%%", row$score))),
+        tags$span(format_number(row$score, 2)))),
       lapply(names(criteria), function(field) tags$td(format_number(row[[field]], 1)))
     )
   }
