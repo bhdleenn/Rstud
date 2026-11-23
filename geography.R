@@ -50,11 +50,12 @@ map_chart <- function(d, detailed = FALSE, satellite = FALSE) {
   }
   list(data = unname(traces), layout = list(
     dragmode = "pan",
-    margin = list(l = 12, r = 12, t = 12, b = 58),
+    paper_bgcolor = "#f5f8fc",
+    margin = list(l = 8, r = 8, t = 10, b = 60),
     geo = list(
-      bgcolor = "#ffffff",
+      bgcolor = "#f5f8fc",
       center = list(lat = rotation$lat),
-      projection = list(type = "orthographic", rotation = rotation, scale = .92),
+      projection = list(type = "orthographic", rotation = rotation, scale = .96),
       showland = TRUE, landcolor = "#e4ebf3", showocean = TRUE, oceancolor = "#f0f5fa",
       showcountries = TRUE, countrycolor = "#9daec4", countrywidth = .6,
       coastlinecolor = "#a3b3c7", showframe = TRUE, framecolor = "#9daec4", framewidth = 1,

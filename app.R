@@ -16,7 +16,7 @@ chart_ids <- c("map", "violin", "radar", "bubble", "heatmap", "ridge")
 charts <- setNames(list(map_chart, violin_chart, radar_chart, bubble_chart, heatmap_chart, ridge_chart), chart_ids)
 descriptions <- setNames(c(
   "Chaque cercle représente une ville. Sa taille indique le nombre de sièges et sa couleur la région.",
-  "Distribution des prix moyens par marque, avec boîte centrale et indicateur de moyenne.",
+  "Survolez une région pour comparer sa médiane, sa moyenne et la moitié centrale des prix.",
   "Moyennes régionales sur cinq indicateurs, normalisés sur 100 dans la sélection.",
   "Les 50 plus gros producteurs de la sélection. La taille des bulles représente la part de marché.",
   "Nombre de marques par région et motorisation principale.",
@@ -54,7 +54,10 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,sans-serif}
 .chart-tools .control-group[hidden],.chart-tools button[hidden]{display:none}
 .chart-stage{border:1px solid var(--edge);border-radius:9px;overflow:hidden;background:var(--panel)}
 .chart-stage:fullscreen{display:flex;align-items:center;justify-content:center;padding:16px;background:var(--panel)}
-.chart-stage:fullscreen #chart{height:100%;width:100%}
+.chart-stage.globe-stage{border-color:transparent;background:#f5f8fc}
+.chart-stage.globe-stage #chart{height:clamp(620px,60vw,790px)}
+.chart-stage:fullscreen #chart,.chart-stage.globe-stage:fullscreen #chart{height:100%;width:100%}
+@media(max-width:700px){.chart-stage.globe-stage #chart{height:clamp(325px,112vw,470px)}}
 .chart-tools .control.secondary{background:transparent;color:var(--accent)}
 .chart-tools .control.secondary:hover{background:#e7eff6}
 .chart-tools .control.secondary:disabled{opacity:.5;cursor:default}
@@ -273,6 +276,7 @@ javascript <- "
         target.textContent = 'Le chargement de Plotly a échoué. Vérifiez la connexion Internet.';
         return;
       }
+      stage.classList.toggle('globe-stage', message.layout?.geo?.projection?.type === 'orthographic');
       message.layout = Object.assign({
         paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff', margin:{l:65,r:35,t:25,b:75},
         font:{color:'#14243b',family:'system-ui, sans-serif'},
