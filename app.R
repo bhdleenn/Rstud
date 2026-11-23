@@ -328,6 +328,9 @@ javascript <- "
 default_path <- file.path("data", "car_brands_600_3.rds")
 options(shiny.maxRequestSize = 20 * 1024^2)
 
+global_region <- "global"
+region_choices <- function(available) c("Global · toutes les régions" = global_region, available)
+
 ui <- fluidPage(
   tags$head(tags$meta(name = "viewport", content = "width=device-width, initial-scale=1"),
             tags$script(src = "https://cdn.plot.ly/plotly-3.3.0.min.js"),
@@ -342,7 +345,9 @@ ui <- fluidPage(
       fileInput("upload", "Importer une base", accept = c(".rds", ".xlsx", ".csv"),
                 buttonLabel = "Parcourir", placeholder = "RDS, XLSX ou CSV"),
       uiOutput("import_status"),
-      selectInput("region", "Région des graphiques", choices = c("Toutes" = "", regions))
+      conditionalPanel("input.section === 'charts'",
+        selectInput("region", "Région des graphiques", choices = region_choices(regions),
+                    selected = global_region))
     ),
     mainPanel(width = 9, tabsetPanel(id = "section",
       tabPanel("Visualisations", value = "charts",
@@ -416,8 +421,8 @@ server <- function(input, output, session) {
   observeEvent(brands(), {
     available <- intersect(regions, brands()$continent)
     current <- isolate(input$region)
-    updateSelectInput(session, "region", choices = c("Toutes" = "", available),
-                      selected = if (isTRUE(current %in% available)) current else "")
+    updateSelectInput(session, "region", choices = region_choices(available),
+                      selected = if (isTRUE(current %in% available)) current else global_region)
   })
   output$import_status <- renderUI({
     d <- brands()
