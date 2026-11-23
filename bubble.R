@@ -12,10 +12,10 @@ bubble_chart <- function(d) {
          hovertemplate = paste0("%{text}<br>R&D : %{x:,.0f} M€<br>Modèles électriques : %{y}",
                                 "<br>Durabilité : %{z:.1f}<br>Part de marché : %{customdata:.2f}%<extra></extra>"))
   })
-  axis <- function(title) list(title = title, gridcolor = "#344660", backgroundcolor = "#172335",
+  axis <- function(title) list(title = title, gridcolor = "#cfbfb0", backgroundcolor = "#f3e6db",
                               showbackground = TRUE)
   list(data = unname(traces), layout = list(scene = list(
-    bgcolor = "#101925", xaxis = axis("Budget R&D (M€)"),
+    bgcolor = "#fff9f3", xaxis = axis("Budget R&D (M€)"),
     yaxis = axis("Modèles électriques"), zaxis = axis("Durabilité"), dragmode = "orbit"
   )))
 }

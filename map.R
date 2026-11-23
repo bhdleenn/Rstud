@@ -9,8 +9,8 @@ map_chart <- function(d) {
          marker = list(size = 8, color = unname(palette[region]), opacity = .65))
   })
   list(data = unname(traces), layout = list(geo = list(
-    bgcolor = "#101925", projection = list(type = "natural earth"),
-    showland = TRUE, landcolor = "#293a52", showocean = TRUE, oceancolor = "#101925",
-    showcountries = TRUE, countrycolor = "#41546c", showframe = FALSE
+    bgcolor = "#fff9f3", projection = list(type = "natural earth"),
+    showland = TRUE, landcolor = "#e8d9cd", showocean = TRUE, oceancolor = "#fff9f3",
+    showcountries = TRUE, countrycolor = "#a99688", showframe = FALSE
   )))
 }

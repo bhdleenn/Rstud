@@ -24,32 +24,33 @@ descriptions <- setNames(c(
 ), chart_ids)
 
 style <- "
-:root{color-scheme:dark;--bg:#0b111b;--panel:#101925;--edge:#27364b;--muted:#9eb0c7;--text:#e7effa;--accent:#4bf0ce}
+:root{color-scheme:light;--bg:#f7e7da;--panel:#fff9f3;--edge:#d6c4b4;--muted:#5b514b;--text:#252728;--accent:#0b5e59}
 body{background:var(--bg);color:var(--text);font-family:system-ui,sans-serif}
 .container-fluid{max-width:1440px;padding:24px 34px 55px}
-.hero{padding:42px 32px;border:1px solid var(--edge);border-radius:18px;background:linear-gradient(90deg,#101925 20%,#10192555),url(road.jpg) center/cover;margin-bottom:24px}
-.hero h1{font-size:clamp(32px,5vw,62px);font-weight:750;letter-spacing:-.055em;margin:0 0 9px}
-.hero p{margin:0;color:#bdcde0;font-size:16px}
-.well,.panel-card{background:var(--panel);border:1px solid var(--edge);border-radius:14px;box-shadow:none}
+.hero{padding:25px 0 26px;border-top:4px solid var(--accent);border-bottom:1px solid var(--edge);margin-bottom:24px}
+.hero h1{font-family:Georgia,serif;font-size:clamp(35px,6vw,68px);font-weight:700;letter-spacing:-.05em;margin:0 0 8px}
+.hero p{margin:0;color:var(--muted);font-size:16px}
+.well,.panel-card{background:var(--panel);border:1px solid var(--edge);border-radius:3px;box-shadow:none}
 .panel-card{padding:20px;margin-top:14px}
-.form-control,.selectize-input,.selectize-dropdown,.selectize-input.full,.selectize-input.input-active{background:#152234!important;color:var(--text)!important;border-color:#354962!important}
-.selectize-dropdown .active{background:#274c58;color:white}
-.btn,.control{border:1px solid #44616d;background:#19313d;color:var(--text);padding:7px 13px;border-radius:7px}
-.btn:hover,.control:hover,.btn:focus,.control:focus{background:#275060;color:white}
+.form-control,.selectize-input,.selectize-dropdown,.selectize-input.full,.selectize-input.input-active{background:#fffdfa!important;color:var(--text)!important;border-color:#b9a797!important}
+.selectize-dropdown .active{background:#e1eee8;color:#133f3c}
+.btn,.control{border:1px solid var(--accent);background:var(--accent);color:white;padding:7px 13px;border-radius:3px}
+.btn:hover,.control:hover,.btn:focus,.control:focus{background:#074541;color:white}
 .nav-tabs{border-color:var(--edge)}
-.nav-tabs>li>a{color:#bccce0}
+.nav-tabs>li>a{color:var(--text);border-radius:3px 3px 0 0}
 .nav-tabs>li.active>a,.nav-tabs>li.active>a:hover,.nav-tabs>li.active>a:focus,.nav-tabs>li>a:hover{color:var(--accent);background:var(--panel);border-color:var(--edge)}
-h2{font-size:23px;margin:0 0 10px}.hint{color:var(--muted);line-height:1.55}.error-note{color:#ffaf9a}
+h2{font-family:Georgia,serif;font-size:27px;margin:0 0 10px}
+.hint{color:var(--muted);line-height:1.55}.error-note{color:#9a2f20}
 #chart{height:510px;width:100%;min-width:0}
 #ridge-state{padding-left:10px;color:var(--accent)}
 .table-wrap,.track-scroll{overflow-x:auto}.leaderboard{width:100%;border-collapse:collapse;font-size:13px}
 .leaderboard th,.leaderboard td{padding:9px;border-bottom:1px solid var(--edge);text-align:left}
-.leaderboard th{color:#a8bad0;white-space:nowrap}.leaderboard tr[data-brand]{cursor:pointer}
-.leaderboard .priority{background:#123837}.leaderboard tr[data-brand]:hover{background:#254452}
-.brand-link{background:none;border:0;padding:0;color:var(--text);text-align:left;text-decoration:underline}
-.contact{margin:13px 0;padding:12px;border-left:3px solid var(--accent);background:#152434}
+.leaderboard th{color:#514439;background:#f2e5d8;white-space:nowrap}.leaderboard tr[data-brand]{cursor:pointer}
+.leaderboard .priority{background:#e3eee6}.leaderboard tr[data-brand]:hover{background:#d8e7e2}
+.brand-link{background:none;border:0;padding:0;color:var(--accent);text-align:left;text-decoration:underline}
+.contact{margin:13px 0;padding:12px;border-left:3px solid var(--accent);background:#eaf2eb}
 .contact a{color:var(--accent);margin-left:8px;overflow-wrap:anywhere}
-.track{position:relative;min-width:850px;height:680px;margin-top:14px;border:1px solid #3a5769;border-radius:13px;overflow:hidden;background:linear-gradient(90deg,#071320aa,#08162022),url(road.jpg) center/cover}
+.track{position:relative;min-width:850px;height:680px;margin-top:14px;border:1px solid #70685f;border-radius:3px;overflow:hidden;background:linear-gradient(90deg,#3a281dcc,#342d2866),url(road.jpg) center/cover}
 .racer{position:absolute;top:var(--lane);left:var(--finish);width:var(--length);transform:translateY(-30%);animation:drive 5s cubic-bezier(.15,.66,.23,1) both}
 .racer-label{position:absolute;bottom:calc(100% + 2px);left:0;font-size:11px;font-weight:700;color:white;text-shadow:0 1px 5px #000;background:#06101bd9;padding:2px 5px;border-radius:4px;white-space:nowrap;max-width:230px;overflow:hidden;text-overflow:ellipsis}
 .car{position:relative;height:18px;background:var(--paint);border-radius:var(--radius);box-shadow:0 1px 7px #000;border:1px solid #07101a}
@@ -109,8 +110,8 @@ javascript <- "
         return;
       }
       message.layout = Object.assign({
-        paper_bgcolor:'#101925', plot_bgcolor:'#101925', margin:{l:65,r:35,t:25,b:75},
-        font:{color:'#d9e6f6',family:'system-ui, sans-serif'},
+        paper_bgcolor:'#fff9f3', plot_bgcolor:'#fff9f3', margin:{l:65,r:35,t:25,b:75},
+        font:{color:'#252728',family:'system-ui, sans-serif'},
         legend:{orientation:'h',y:-.16}, autosize:true
       }, message.layout || {});
       message.config = {responsive:true, displaylogo:false};
@@ -153,8 +154,8 @@ ui <- fluidPage(
   tags$head(tags$meta(name = "viewport", content = "width=device-width, initial-scale=1"),
             tags$script(src = "https://cdn.plot.ly/plotly-2.35.2.min.js"),
             tags$style(HTML(style)), tags$script(HTML(javascript))),
-  tags$header(class = "hero", tags$h1("Auto Cockpit"),
-              tags$p("Marché mondial, innovation et sélection des partenaires")),
+  tags$header(class = "hero", tags$h1("Marché automobile"),
+              tags$p("Analyse mondiale et sélection des partenaires stratégiques")),
   sidebarLayout(
     sidebarPanel(width = 3,
       fileInput("upload", "Importer une base", accept = c(".rds", ".xlsx", ".csv"),
@@ -172,7 +173,7 @@ ui <- fluidPage(
           tags$div(id = "chart", role = "region", `aria-label` = "Visualisation interactive"))),
       tabPanel("Partenaires", value = "partners",
         tags$section(class = "panel-card", tags$h2("Partenaires autonomes"),
-          tags$p(class = "hint", "Asie en vert. Les alternatives proviennent d’Amérique du Nord. Cliquez sur une entreprise pour afficher ses coordonnées."),
+          tags$p(class = "hint", "Les dix partenaires asiatiques sont surlignés en vert pâle. Les alternatives proviennent d’Amérique du Nord. Cliquez sur une entreprise pour afficher ses coordonnées."),
           tags$p(class = "hint", "Score sur 100, après normalisation commune aux deux régions. R&D 30 %, sécurité 25 %, durabilité 20 %, gamme électrique 15 %, concessionnaires 10 %."),
           uiOutput("contact"), uiOutput("ranked"))),
       tabPanel("Sur la route", value = "road",

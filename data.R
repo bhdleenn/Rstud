@@ -6,7 +6,7 @@ labels <- setNames(c("Production annuelle", "Prix moyen", "Modèles électriques
                      "Part de marché", "Sécurité", "Durabilité", "Concessionnaires",
                      "Budget R&D"), metrics)
 regions <- c("Asie", "Amérique du Nord", "Europe", "Amérique du Sud", "Afrique", "Océanie")
-palette <- setNames(c("#4bf0ce", "#fcb66b", "#91a9ff", "#fa87b6", "#c6ed81", "#ceadff"), regions)
+palette <- setNames(c("#126762", "#a84730", "#365585", "#87354f", "#7a5b24", "#625184"), regions)
 
 load_brands <- function(path, filename = path) {
   extension <- tolower(tools::file_ext(filename))
