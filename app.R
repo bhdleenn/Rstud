@@ -52,6 +52,7 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,sans-serif}
 .chart-tools .form-group,.chart-tools .checkbox,.chart-tools label{margin:0}
 .chart-tools .control-group{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .chart-tools .control-group[hidden],.chart-tools button[hidden]{display:none}
+.app-credit{margin-top:22px;padding-top:13px;border-top:1px solid var(--edge);color:var(--muted);font-size:13px;text-align:right}
 .chart-stage{border:1px solid var(--edge);border-radius:9px;overflow:hidden;background:var(--panel)}
 .chart-stage:fullscreen{display:flex;align-items:center;justify-content:center;padding:16px;background:var(--panel)}
 .chart-stage.globe-stage{border-color:transparent;background:#f5f8fc}
@@ -394,7 +395,8 @@ ui <- fluidPage(
       tabPanel("Sur la route", value = "road",
         tags$section(class = "panel-card", tags$h2("Les partenaires asiatiques en piste"), uiOutput("road")))
     ))
-  )
+  ),
+  tags$footer(class = "app-credit", "Réalisé par Lentier au carré")
 )
 
 server <- function(input, output, session) {
