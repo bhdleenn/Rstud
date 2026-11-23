@@ -28,12 +28,13 @@ style <- "
 body{background:var(--bg);color:var(--text);font-family:system-ui,sans-serif}
 .container-fluid{max-width:1440px;padding:24px 34px 55px}
 
-.hero{display:grid;grid-template-columns:minmax(0,2fr) minmax(180px,1fr);min-height:192px;border-top:4px solid var(--accent);border-bottom:1px solid var(--edge);margin-bottom:24px}
-.hero-copy{padding:32px 15px 30px 0;align-self:center}
-.hero-image{background:linear-gradient(90deg,#f7e7da,transparent 42%),linear-gradient(#64482d33,#64482d33),url(road.jpg) center/cover}
-.market-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-bottom:1px solid var(--edge);margin-bottom:17px}
-.market-metric{padding:4px 12px 13px;border-right:1px solid var(--edge);min-width:0}
-.market-metric:first-child{padding-left:0}.market-metric:last-child{border-right:0}
+.hero{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);min-height:230px;border-top:4px solid var(--accent);border-bottom:1px solid var(--edge);margin-bottom:27px;background:#fff4e9}
+.hero-copy{padding:32px clamp(18px,4vw,60px);align-self:center}
+.hero-image{background:#d2c4ae url(automobile.jpg) center 57%/cover}
+.hero h1,.chart-header h2{text-wrap:balance}
+
+.market-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;border:1px solid var(--edge);border-radius:6px;background:var(--edge);overflow:hidden;margin-bottom:17px}
+.market-metric{padding:13px 12px;background:#faf0e6;min-width:0}
 .market-metric strong{display:block;font-family:Georgia,serif;font-size:clamp(20px,2.7vw,36px);font-weight:400;line-height:1.1;color:var(--accent);font-variant-numeric:tabular-nums}
 .market-metric span{display:block;color:var(--muted);font-size:12px;margin-top:6px}
 .chart-header{display:flex;justify-content:space-between;align-items:flex-start;column-gap:18px}
@@ -65,15 +66,16 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,sans-serif}
 
 .hero h1{font-family:Georgia,serif;font-size:clamp(35px,6vw,68px);font-weight:700;letter-spacing:-.05em;margin:0 0 8px}
 .hero p{margin:0;color:var(--muted);font-size:16px}
-.well,.panel-card{background:var(--panel);border:1px solid var(--edge);border-radius:3px;box-shadow:none}
-.panel-card{padding:22px;margin-top:14px;border-radius:9px}
+.well,.panel-card{background:var(--panel);border:1px solid var(--edge);border-radius:8px;box-shadow:0 2px 4px #4f362609}
+.well{padding:17px}.panel-card{padding:22px;margin-top:14px}
 .form-control,.selectize-input,.selectize-dropdown,.selectize-input.full,.selectize-input.input-active{background:#fffdfa!important;color:var(--text)!important;border-color:#b9a797!important}
 .selectize-dropdown .active{background:#e1eee8;color:#133f3c}
 .btn,.control{border:1px solid var(--accent);background:var(--accent);color:white;padding:7px 13px;border-radius:3px}
 .btn:hover,.control:hover,.btn:focus,.control:focus{background:#074541;color:white}
 .nav-tabs{border-color:var(--edge)}
-.nav-tabs>li>a{color:var(--text);border-radius:3px 3px 0 0}
-.nav-tabs>li.active>a,.nav-tabs>li.active>a:hover,.nav-tabs>li.active>a:focus,.nav-tabs>li>a:hover{color:var(--accent);background:var(--panel);border-color:var(--edge)}
+.nav-tabs>li>a{color:var(--muted);border:0;border-radius:0;font-weight:650;padding:10px 14px 12px}
+.nav-tabs>li>a:hover,.nav-tabs>li>a:focus{color:var(--accent);background:#fff5eb}
+.nav-tabs>li.active>a,.nav-tabs>li.active>a:hover,.nav-tabs>li.active>a:focus{color:var(--accent);background:transparent;border:0;box-shadow:inset 0 -3px var(--accent)}
 h2{font-family:Georgia,serif;font-size:27px;margin:0 0 10px}
 .hint{color:var(--muted);line-height:1.55}.error-note{color:#9a2f20}
 #chart{height:510px;width:100%;min-width:0}
@@ -90,15 +92,22 @@ h2{font-family:Georgia,serif;font-size:27px;margin:0 0 10px}
 .road-toolbar{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
 .road-toolbar .hint{margin:0}
 .contact a{color:var(--accent);margin-left:8px;overflow-wrap:anywhere}
-.track{position:relative;min-width:850px;height:680px;margin-top:14px;border:1px solid #70685f;border-radius:3px;overflow:hidden;background:linear-gradient(90deg,#3a281dcc,#342d2866),url(road.jpg) center/cover}
+.track{position:relative;isolation:isolate;min-width:790px;height:690px;margin-top:14px;border:1px solid #a39383;border-radius:9px;overflow:hidden;background:#66615c url(road.jpg) center/100% 100%}
+.track::after{content:'';position:absolute;z-index:-1;inset:4% 9% 5% auto;width:3px;background:repeating-linear-gradient(#fff0daaa 0 7px,#241d16aa 7px 14px)}
 .racer{position:absolute;top:var(--lane);left:var(--finish);width:var(--length);transform:translateY(-30%);animation:drive 5s cubic-bezier(.15,.66,.23,1) both}
-.racer-label{position:absolute;bottom:calc(100% + 2px);left:0;font-size:11px;font-weight:700;color:white;text-shadow:0 1px 5px #000;background:#06101bd9;padding:2px 5px;border-radius:4px;white-space:nowrap;max-width:230px;overflow:hidden;text-overflow:ellipsis}
-.car{position:relative;height:18px;background:var(--paint);border-radius:var(--radius);box-shadow:0 1px 7px #000;border:1px solid #07101a}
-.car::before,.car::after{content:'';position:absolute;left:17%;width:65%;height:3px;background:linear-gradient(90deg,#06090e 0 22%,transparent 22% 77%,#06090e 77%);border-radius:3px}
-.car::before{top:-3px}.car::after{bottom:-3px}.car-roof{position:absolute;left:24%;top:3px;width:var(--roof);height:10px;background:#152234;border:1px solid #ffffff77;border-radius:3px 6px 6px 3px}
+.racer-label{position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:6px;width:max-content;padding:3px 6px;border:1px solid #fff8e552;border-radius:4px;background:#fff5e9;color:#252728;box-shadow:0 2px 6px #201d1859;font-size:11px;line-height:1.25}
+.racer-rank{font-weight:750;color:#125950}
+.racer-name{font-weight:650;max-width:160px;overflow-wrap:anywhere}
+.racer-score{font-variant-numeric:tabular-nums;color:#5b514b;white-space:nowrap}
+.car{position:relative;height:21px;background:linear-gradient(180deg,#ffffff80,transparent 35%,#00000050),var(--paint);border-radius:var(--radius) 43% 42% var(--radius);box-shadow:0 3px 6px #24190fcc;border:1px solid #241f1a}
+.car::before,.car::after{content:'';position:absolute;left:15%;width:67%;height:3px;background:linear-gradient(90deg,#24211e 0 19%,transparent 19% 80%,#24211e 80%);border-radius:3px}
+.car::before{top:-2px}.car::after{bottom:-2px}
+.car-roof{position:absolute;left:23%;top:3px;width:var(--roof);height:13px;background:linear-gradient(90deg,#303635 0 21%,var(--paint) 21% 68%,#313535 68%);border:1px solid #ffffff90;border-radius:28% 47% 46% 28%}
+.car-lights{position:absolute;inset:4px 3px auto auto;width:4px;height:3px;border-radius:50%;background:#fff4c9;box-shadow:0 8px #fff4c9}
+
 @keyframes drive{from{left:-7%}to{left:var(--finish)}}
 @media(prefers-reduced-motion:reduce){.racer{animation:none}}
-@media(max-width:700px){.container-fluid{padding:15px}.hero{min-height:0;grid-template-columns:minmax(0,1fr) 24%}.hero-copy{padding:18px 8px 18px 0}.hero p{font-size:14px}.chart-header{flex-wrap:wrap}.market-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.market-metric:nth-child(2){border-right:0}.market-metric:nth-child(3){padding-left:0}.panel-card{padding:12px}#chart{height:450px}}
+@media(max-width:700px){.container-fluid{padding:15px}.hero{min-height:0;grid-template-columns:minmax(0,1fr) 31%}.hero-copy{padding:15px}.hero p{font-size:14px}.chart-header{flex-wrap:wrap}.market-summary{grid-template-columns:repeat(2,minmax(0,1fr))} .panel-card{padding:12px}#chart{height:450px}}
 "
 
 javascript <- "

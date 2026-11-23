@@ -7,14 +7,18 @@ road_view <- function(partners) {
     row <- d[i, ]
     # Le rang fixe la position horizontale. Chaque véhicule dispose de sa voie.
     position <- 79 - (i - 1L) * 5.6
-    lane <- 6 + (i - 1L) * 9.65
+    lane <- 14.5 + (i - 1L) * 7.8
     style <- sprintf("--lane: %.2f%%; --finish: %.2f%%; --paint: %s; --length: %dpx; --roof: %d%%; --radius: %dpx;",
                      lane, position, colors[i], 46 + (i %% 5L) * 5L,
                      31 + (i %% 4L) * 10L, 4 + (i %% 3L) * 4L)
     tags$div(class = "racer", style = style,
       title = paste(row$brand_name, "—", format_number(row$score, 2), "/ 100"),
-      tags$div(class = "racer-label", paste0(i, ". ", row$brand_name, " · ", format_number(row$score, 1))),
-      tags$div(class = "car", `aria-hidden` = "true", tags$span(class = "car-roof"))
+      tags$div(class = "racer-label",
+        tags$span(class = "racer-rank", sprintf("%02d", i)),
+        tags$span(class = "racer-name", row$brand_name),
+        tags$span(class = "racer-score", format_number(row$score, 1))),
+      tags$div(class = "car", `aria-hidden` = "true",
+        tags$span(class = "car-roof"), tags$span(class = "car-lights"))
     )
   })
   tags$div(
