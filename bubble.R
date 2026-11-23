@@ -15,7 +15,9 @@ bubble_chart <- function(d) {
   axis <- function(title) list(title = title, gridcolor = "#cfbfb0", backgroundcolor = "#f3e6db",
                               showbackground = TRUE)
   list(data = unname(traces), layout = list(scene = list(
-    bgcolor = "#fff9f3", xaxis = axis("Budget R&D (M€)"),
+    bgcolor = "#fff9f3", aspectmode = "cube",
+    camera = list(eye = list(x = 1.55, y = 1.65, z = .95)),
+    xaxis = axis("Budget R&D (M€)"),
     yaxis = axis("Modèles électriques"), zaxis = axis("Durabilité"), dragmode = "orbit"
   )))
 }

@@ -1,4 +1,4 @@
-map_chart <- function(d) {
+map_chart <- function(d, detailed = FALSE) {
   locations <- aggregate(
     list(brands = d$brand_id),
     d[c("city", "country", "continent", "latitude", "longitude")], length
@@ -15,6 +15,17 @@ map_chart <- function(d) {
                        color = unname(palette[region]), opacity = .82,
                        line = list(color = "#fff9f3", width = 1)))
   })
+  if (detailed) {
+    traces <- lapply(traces, function(trace) {
+      trace$type <- "scattermap"
+      trace
+    })
+    return(list(data = unname(traces), layout = list(
+      margin = list(l = 0, r = 0, t = 4, b = 48),
+      map = list(style = "https://tiles.openfreemap.org/styles/positron",
+                 center = list(lat = 22, lon = 10), zoom = 0.9)
+    )))
+  }
   list(data = unname(traces), layout = list(
     margin = list(l = 0, r = 0, t = 12, b = 55),
     geo = list(bgcolor = "#fff9f3", projection = list(type = "natural earth"),
@@ -25,7 +36,7 @@ map_chart <- function(d) {
   ))
 }
 
-heatmap_chart <- function(d) {
+heatmap_chart <- function(d, detailed = FALSE) {
   counts <- table(d$continent, d$primary_motorization)
   annotations <- lapply(seq_along(counts), function(i) {
     cell <- arrayInd(i, dim(counts))

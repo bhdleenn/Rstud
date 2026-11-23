@@ -38,13 +38,35 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,sans-serif}
 .market-metric span{display:block;color:var(--muted);font-size:12px;margin-top:6px}
 .chart-header{display:flex;justify-content:space-between;align-items:flex-start;column-gap:18px}
 .chart-header h2{font-size:clamp(24px,3vw,36px)}
-.chart-header .form-group{min-width:170px;width:190px;max-width:100%;margin-bottom:6px}
+.chart-nav{margin:0 0 18px}
+.chart-nav .form-group{width:100%;margin:0}
+.chart-nav .shiny-options-group{display:flex;gap:7px;flex-wrap:wrap}
+.chart-nav .radio-inline{margin:0;padding:0;position:relative}
+.chart-nav input{position:absolute;opacity:0}
+.chart-nav .radio-inline span{display:block;padding:8px 12px;border:1px solid var(--edge);border-radius:6px;background:#fffdf9;color:#473b34;transition:background .15s}
+.chart-nav .radio-inline:hover span{background:#f4e7db}
+.chart-nav input:checked+span{background:var(--accent);color:white;border-color:var(--accent)}
+.chart-nav input:focus-visible+span{outline:2px solid var(--accent);outline-offset:3px}
+.chart-tools{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.chart-tools .form-group,.chart-tools .checkbox,.chart-tools label{margin:0}
+.chart-tools .control-group{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.chart-tools .control-group[hidden],.chart-tools button[hidden]{display:none}
+.chart-stage{border:1px solid var(--edge);border-radius:9px;overflow:hidden;background:var(--panel)}
+.chart-stage:fullscreen{display:flex;align-items:center;justify-content:center;padding:16px;background:var(--panel)}
+.chart-stage:fullscreen #chart{height:100%;width:100%}
+.chart-tools .control.secondary{background:transparent;color:var(--accent)}
+.chart-tools .control.secondary:hover{background:#e8f1ea}
+.chart-tools .control.secondary:disabled{opacity:.5;cursor:default}
+.chart-tools .map-credit{font-size:11px;color:var(--muted)}
+.map-credit a{color:var(--accent);text-decoration:underline}
+.timeline-slider{width:clamp(110px,19vw,260px)!important;accent-color:var(--accent)}
+
 .chart-header .hint{max-width:55ch;margin-bottom:12px}
 
 .hero h1{font-family:Georgia,serif;font-size:clamp(35px,6vw,68px);font-weight:700;letter-spacing:-.05em;margin:0 0 8px}
 .hero p{margin:0;color:var(--muted);font-size:16px}
 .well,.panel-card{background:var(--panel);border:1px solid var(--edge);border-radius:3px;box-shadow:none}
-.panel-card{padding:20px;margin-top:14px}
+.panel-card{padding:22px;margin-top:14px;border-radius:9px}
 .form-control,.selectize-input,.selectize-dropdown,.selectize-input.full,.selectize-input.input-active{background:#fffdfa!important;color:var(--text)!important;border-color:#b9a797!important}
 .selectize-dropdown .active{background:#e1eee8;color:#133f3c}
 .btn,.control{border:1px solid var(--accent);background:var(--accent);color:white;padding:7px 13px;border-radius:3px}
@@ -86,6 +108,12 @@ javascript <- "
     const target = document.getElementById('chart');
     const replay = document.getElementById('replay-ridge');
     const state = document.getElementById('ridge-state');
+    const slider = document.getElementById('ridge-slider');
+    const animation = document.getElementById('ridge-controls');
+    const zoom = document.getElementById('chart-fullscreen');
+    const exportImage = document.getElementById('chart-export');
+    const stage = document.getElementById('chart-stage');
+    const toolStatus = document.getElementById('chart-tool-status');
     let data = null, generation = 0, timer = null;
     const arrayKeys = ['x','y','z','lat','lon','text','r','theta','customdata'];
     function traces(items) {
@@ -99,6 +127,12 @@ javascript <- "
         return item;
       });
     }
+    async function drawFrame(index) {
+      const frame = data.frames[index];
+      slider.value = index;
+      state.textContent = 'Fondation jusqu’en ' + frame.name;
+      await Plotly.react(target, traces(frame.data), data.layout, data.config);
+    }
     async function play() {
       if (!data || !data.frames || !window.Plotly) return;
       const version = ++generation;
@@ -107,10 +141,9 @@ javascript <- "
       async function draw(now) {
         if (version !== generation) return;
         const ratio = Math.max(0, Math.min(1, (now - start) / 5000));
-        const frame = data.frames[Math.floor(ratio * (data.frames.length - 1))];
-        if (state.textContent !== 'Fondation jusqu’en ' + frame.name) {
-          state.textContent = 'Fondation jusqu’en ' + frame.name;
-          try { await Plotly.react(target, traces(frame.data), data.layout, data.config); }
+        const index = Math.floor(ratio * (data.frames.length - 1));
+        if (String(index) !== slider.value || !state.textContent) {
+          try { await drawFrame(index); }
           catch (error) { if (version === generation) state.textContent = 'Animation indisponible.'; return; }
         }
         if (version === generation && ratio < 1) timer = requestAnimationFrame(draw);
@@ -118,11 +151,41 @@ javascript <- "
       timer = requestAnimationFrame(draw);
     }
     replay.addEventListener('click', play);
+    slider.addEventListener('input', async () => {
+      if (!data?.frames) return;
+      ++generation;
+      cancelAnimationFrame(timer);
+      try { await drawFrame(Number(slider.value)); }
+      catch (error) { state.textContent = 'Vue indisponible.'; }
+    });
+    zoom.hidden = !document.fullscreenEnabled;
+    zoom.addEventListener('click', () => {
+      toolStatus.textContent = '';
+      stage.requestFullscreen().catch(() => {
+        toolStatus.textContent = 'Le plein écran est indisponible dans cette fenêtre.';
+      });
+    });
+    document.addEventListener('fullscreenchange', () => {
+      if (window.Plotly && target._fullLayout) Plotly.Plots.resize(target);
+    });
+    exportImage.addEventListener('click', async () => {
+      exportImage.disabled = true;
+      toolStatus.textContent = '';
+      try { await Plotly.downloadImage(target, {format:'png', filename:'marche-automobile', scale:2}); }
+      catch (error) { toolStatus.textContent = 'L’export PNG est indisponible pour cette vue.'; }
+      finally { exportImage.disabled = false; }
+    });
     Shiny.addCustomMessageHandler('cockpit-chart', async (message) => {
       const version = ++generation;
       cancelAnimationFrame(timer);
       state.textContent = '';
-      replay.hidden = !message.frames;
+      toolStatus.textContent = '';
+      animation.hidden = !message.frames;
+      exportImage.disabled = true;
+      if (message.frames) {
+        slider.max = message.frames.length - 1;
+        slider.value = slider.max;
+      }
       if (!window.Plotly) {
         target.textContent = 'Le chargement de Plotly a échoué. Vérifiez la connexion Internet.';
         return;
@@ -134,13 +197,14 @@ javascript <- "
         hoverlabel:{bgcolor:'#fff9f3',bordercolor:'#b9a797',font:{color:'#252728'}},
         autosize:true
       }, message.layout || {});
-      message.config = {responsive:true, displaylogo:false};
+      message.config = {responsive:true, displaylogo:false, modeBarButtonsToRemove:['toImage']};
       data = message;
       try {
         await Plotly.react(target, traces(message.data), message.layout, message.config);
+        if (version === generation) exportImage.disabled = false;
         if (version === generation && message.frames) {
           if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-            state.textContent = 'Vue finale';
+            state.textContent = 'Fondation jusqu’en ' + message.frames.at(-1).name;
           } else {
             play();
           }
@@ -172,7 +236,7 @@ options(shiny.maxRequestSize = 20 * 1024^2)
 
 ui <- fluidPage(
   tags$head(tags$meta(name = "viewport", content = "width=device-width, initial-scale=1"),
-            tags$script(src = "https://cdn.plot.ly/plotly-2.35.2.min.js"),
+            tags$script(src = "https://cdn.plot.ly/plotly-3.3.0.min.js"),
             tags$style(HTML(style)), tags$script(HTML(javascript))),
   tags$header(class = "hero",
     tags$div(class = "hero-copy", tags$h1("Marché automobile"),
@@ -189,12 +253,28 @@ ui <- fluidPage(
     mainPanel(width = 9, tabsetPanel(id = "section",
       tabPanel("Visualisations", value = "charts",
         tags$section(class = "panel-card",
-          tags$div(class = "chart-header", uiOutput("chart_hint"),
-            selectInput("chart_type", "Visualisation", setNames(chart_ids, chart_names))),
+          tags$nav(class = "chart-nav", `aria-label` = "Choix de la visualisation",
+            radioButtons("chart_type", NULL, setNames(chart_ids, chart_names), inline = TRUE)),
+          tags$div(class = "chart-header", uiOutput("chart_hint")),
           uiOutput("market_summary"),
-          tags$button(type = "button", id = "replay-ridge", class = "control", hidden = NA, "Rejouer · 5 s"),
-          tags$span(id = "ridge-state", `aria-live` = "off"),
-          tags$div(id = "chart", role = "region", `aria-label` = "Visualisation interactive"))),
+          tags$div(class = "chart-tools",
+            tags$button(type = "button", id = "chart-export", class = "control secondary",
+              disabled = NA, "Exporter en PNG"),
+            tags$button(type = "button", id = "chart-fullscreen", class = "control secondary",
+              "Plein écran"),
+            conditionalPanel("input.chart_type === 'map'",
+              checkboxInput("detail_map", "Fond de carte détaillé"),
+              conditionalPanel("input.detail_map", tags$small(class = "map-credit",
+                tags$a(href = "https://openfreemap.org/", "OpenFreeMap"), " · ",
+                tags$a(href = "https://www.openstreetmap.org/copyright", "© OpenStreetMap")))),
+            tags$div(id = "ridge-controls", class = "control-group", hidden = NA,
+              tags$button(type = "button", id = "replay-ridge", class = "control", "Rejouer · 5 s"),
+              tags$input(id = "ridge-slider", class = "timeline-slider", type = "range",
+                         min = 0, max = 0, value = 0, `aria-label` = "Année de fondation maximale"),
+              tags$span(id = "ridge-state"))),
+          tags$div(id = "chart-tool-status", class = "error-note", role = "status"),
+          tags$div(id = "chart-stage", class = "chart-stage",
+            tags$div(id = "chart", role = "region", `aria-label` = "Visualisation interactive")))),
       tabPanel("Partenaires", value = "partners",
         tags$section(class = "panel-card", tags$h2("Partenaires autonomes"),
           tags$p(class = "hint", "Les dix partenaires asiatiques sont surlignés en vert pâle. Les alternatives proviennent d’Amérique du Nord. Cliquez sur une entreprise pour afficher ses coordonnées."),
@@ -260,7 +340,9 @@ server <- function(input, output, session) {
   })
   observe({
     req(input$section == "charts")
-    chart <- charts[[req(input$chart_type)]](filtered())
+    id <- req(input$chart_type)
+    d <- filtered()
+    chart <- if (id == "map") map_chart(d, detailed = isTRUE(input$detail_map)) else charts[[id]](d)
     session$sendCustomMessage("cockpit-chart", chart)
   })
   ranking <- reactive(rank_partners(req(brands())))
