@@ -29,7 +29,7 @@ ridge_chart <- function(d) {
   list(data = traces_at(tail(curves, 1L)[[1L]]),
        frames = Map(function(year, curve) list(name = as.character(year), data = traces_at(curve)),
                     cutoffs, curves),
-       layout = list(xaxis = list(title = "Prix moyen actuel (€)", gridcolor = "#dacbbd"),
+       layout = list(xaxis = list(title = "Prix moyen actuel (€)", gridcolor = "#d4dfea"),
          yaxis = list(tickmode = "array", tickvals = seq_along(bands), ticktext = bands,
                       range = c(.75, length(bands) + 1.05), fixedrange = TRUE),
          margin = list(l = 140, r = 25, t = 25, b = 65)))

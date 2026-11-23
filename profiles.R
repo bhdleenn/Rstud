@@ -8,7 +8,7 @@ violin_chart <- function(d) {
          hovertemplate = "%{y:,.0f} €<extra>%{fullData.name}</extra>")
   })
   list(data = unname(traces), layout = list(showlegend = FALSE,
-       yaxis = list(title = "Prix moyen par marque (€)", gridcolor = "#dacbbd")))
+       yaxis = list(title = "Prix moyen par marque (€)", gridcolor = "#d4dfea")))
 }
 
 radar_chart <- function(d) {
@@ -26,7 +26,7 @@ radar_chart <- function(d) {
          hovertemplate = "%{theta} · %{r:.1f}/100<extra>%{fullData.name}</extra>")
   })
   list(data = unname(traces), layout = list(polar = list(
-    bgcolor = "#fff9f3", radialaxis = list(range = c(0, 100), gridcolor = "#dacbbd"),
-    angularaxis = list(gridcolor = "#dacbbd")
+    bgcolor = "#ffffff", radialaxis = list(range = c(0, 100), gridcolor = "#d4dfea"),
+    angularaxis = list(gridcolor = "#d4dfea")
   )))
 }

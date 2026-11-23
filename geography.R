@@ -13,7 +13,7 @@ map_chart <- function(d, detailed = FALSE) {
          hovertemplate = "<b>%{text}</b><br>%{customdata} entreprise(s)<extra>%{fullData.name}</extra>",
          marker = list(size = I(6 + 20 * sqrt(group$brands / max(locations$brands))),
                        color = unname(palette[region]), opacity = .82,
-                       line = list(color = "#fff9f3", width = 1)))
+                       line = list(color = "#ffffff", width = 1)))
   })
   if (detailed) {
     traces <- lapply(traces, function(trace) {
@@ -28,10 +28,10 @@ map_chart <- function(d, detailed = FALSE) {
   }
   list(data = unname(traces), layout = list(
     margin = list(l = 0, r = 0, t = 12, b = 55),
-    geo = list(bgcolor = "#fff9f3", projection = list(type = "natural earth"),
-      showland = TRUE, landcolor = "#e8d9cd", showocean = TRUE, oceancolor = "#fff9f3",
-      showcountries = TRUE, countrycolor = "#a99688", countrywidth = .6,
-      coastlinecolor = "#ae9a89", showframe = FALSE, lataxis = list(range = c(-59, 85))
+    geo = list(bgcolor = "#ffffff", projection = list(type = "natural earth"),
+      showland = TRUE, landcolor = "#e4ebf3", showocean = TRUE, oceancolor = "#ffffff",
+      showcountries = TRUE, countrycolor = "#9daec4", countrywidth = .6,
+      coastlinecolor = "#a3b3c7", showframe = FALSE, lataxis = list(range = c(-59, 85))
     )
   ))
 }
@@ -43,11 +43,11 @@ heatmap_chart <- function(d, detailed = FALSE) {
     value <- counts[i]
     list(x = colnames(counts)[cell[2L]], y = rownames(counts)[cell[1L]],
          text = as.character(value), showarrow = FALSE,
-         font = list(color = if (value >= max(counts) * .72) "#ffffff" else "#252728", size = 15))
+         font = list(color = if (value >= max(counts) * .72) "#ffffff" else "#14243b", size = 15))
   })
   list(data = list(list(type = "heatmap", x = colnames(counts), y = rownames(counts),
     z = lapply(seq_len(nrow(counts)), function(i) unname(counts[i, ])), zmin = 0,
-    colorscale = list(list(0, "#f5ede3"), list(.55, "#74aaa2"), list(1, "#0c514d")),
+    colorscale = list(list(0, "#f0f5fa"), list(.55, "#6cbbc3"), list(1, "#14385f")),
     xgap = 4, ygap = 4, colorbar = list(title = "Marques", thickness = 12),
     hovertemplate = "%{y}<br>%{x}<br><b>%{z} marques</b><extra></extra>")),
     layout = list(annotations = annotations, margin = list(l = 145, r = 40, t = 25, b = 105),

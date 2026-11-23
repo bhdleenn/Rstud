@@ -24,17 +24,17 @@ descriptions <- setNames(c(
 ), chart_ids)
 
 style <- "
-:root{color-scheme:light;--bg:#f7e7da;--panel:#fff9f3;--edge:#d6c4b4;--muted:#5b514b;--text:#252728;--accent:#0b5e59}
+:root{color-scheme:light;--bg:#edf1f6;--panel:#ffffff;--edge:#ccd7e4;--muted:#506079;--text:#14243b;--accent:#15566d}
 body{background:var(--bg);color:var(--text);font-family:system-ui,sans-serif}
 .container-fluid{max-width:1440px;padding:24px 34px 55px}
 
-.hero{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);min-height:230px;border-top:4px solid var(--accent);border-bottom:1px solid var(--edge);margin-bottom:27px;background:#fff4e9}
+.hero{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);min-height:230px;border-top:4px solid var(--accent);border-bottom:1px solid var(--edge);margin-bottom:27px;background:#f8faff}
 .hero-copy{padding:32px clamp(18px,4vw,60px);align-self:center}
-.hero-image{background:#d2c4ae url(automobile.jpg) center 57%/cover}
+.hero-image{background:#9fb2cc url(automobile.jpg) center 57%/cover;background-blend-mode:luminosity}
 .hero h1,.chart-header h2{text-wrap:balance}
 
 .market-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;border:1px solid var(--edge);border-radius:6px;background:var(--edge);overflow:hidden;margin-bottom:17px}
-.market-metric{padding:13px 12px;background:#faf0e6;min-width:0}
+.market-metric{padding:13px 12px;background:#f1f5fa;min-width:0}
 .market-metric strong{display:block;font-family:Georgia,serif;font-size:clamp(20px,2.7vw,36px);font-weight:400;line-height:1.1;color:var(--accent);font-variant-numeric:tabular-nums}
 .market-metric span{display:block;color:var(--muted);font-size:12px;margin-top:6px}
 .chart-header{display:flex;justify-content:space-between;align-items:flex-start;column-gap:18px}
@@ -44,8 +44,8 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,sans-serif}
 .chart-nav .shiny-options-group{display:flex;gap:7px;flex-wrap:wrap}
 .chart-nav .radio-inline{margin:0;padding:0;position:relative}
 .chart-nav input{position:absolute;opacity:0}
-.chart-nav .radio-inline span{display:block;padding:8px 12px;border:1px solid var(--edge);border-radius:6px;background:#fffdf9;color:#473b34;transition:background .15s}
-.chart-nav .radio-inline:hover span{background:#f4e7db}
+.chart-nav .radio-inline span{display:block;padding:8px 12px;border:1px solid var(--edge);border-radius:6px;background:#fcfdff;color:#35465d;transition:background .15s}
+.chart-nav .radio-inline:hover span{background:#edf2f8}
 .chart-nav input:checked+span{background:var(--accent);color:white;border-color:var(--accent)}
 .chart-nav input:focus-visible+span{outline:2px solid var(--accent);outline-offset:3px}
 .chart-tools{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
@@ -56,7 +56,7 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,sans-serif}
 .chart-stage:fullscreen{display:flex;align-items:center;justify-content:center;padding:16px;background:var(--panel)}
 .chart-stage:fullscreen #chart{height:100%;width:100%}
 .chart-tools .control.secondary{background:transparent;color:var(--accent)}
-.chart-tools .control.secondary:hover{background:#e8f1ea}
+.chart-tools .control.secondary:hover{background:#e7eff6}
 .chart-tools .control.secondary:disabled{opacity:.5;cursor:default}
 .chart-tools .map-credit{font-size:11px;color:var(--muted)}
 .map-credit a{color:var(--accent);text-decoration:underline}
@@ -66,44 +66,44 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,sans-serif}
 
 .hero h1{font-family:Georgia,serif;font-size:clamp(35px,6vw,68px);font-weight:700;letter-spacing:-.05em;margin:0 0 8px}
 .hero p{margin:0;color:var(--muted);font-size:16px}
-.well,.panel-card{background:var(--panel);border:1px solid var(--edge);border-radius:8px;box-shadow:0 2px 4px #4f362609}
+.well,.panel-card{background:var(--panel);border:1px solid var(--edge);border-radius:8px;box-shadow:0 2px 4px #2337550e}
 .well{padding:17px}.panel-card{padding:22px;margin-top:14px}
-.form-control,.selectize-input,.selectize-dropdown,.selectize-input.full,.selectize-input.input-active{background:#fffdfa!important;color:var(--text)!important;border-color:#b9a797!important}
-.selectize-dropdown .active{background:#e1eee8;color:#133f3c}
+.form-control,.selectize-input,.selectize-dropdown,.selectize-input.full,.selectize-input.input-active{background:#fcfdff!important;color:var(--text)!important;border-color:#9babc0!important}
+.selectize-dropdown .active{background:#dfedf3;color:#193b56}
 .btn,.control{border:1px solid var(--accent);background:var(--accent);color:white;padding:7px 13px;border-radius:3px}
-.btn:hover,.control:hover,.btn:focus,.control:focus{background:#074541;color:white}
+.btn:hover,.control:hover,.btn:focus,.control:focus{background:#114555;color:white}
 .nav-tabs{border-color:var(--edge)}
 .nav-tabs>li>a{color:var(--muted);border:0;border-radius:0;font-weight:650;padding:10px 14px 12px}
-.nav-tabs>li>a:hover,.nav-tabs>li>a:focus{color:var(--accent);background:#fff5eb}
+.nav-tabs>li>a:hover,.nav-tabs>li>a:focus{color:var(--accent);background:#f4f7fc}
 .nav-tabs>li.active>a,.nav-tabs>li.active>a:hover,.nav-tabs>li.active>a:focus{color:var(--accent);background:transparent;border:0;box-shadow:inset 0 -3px var(--accent)}
 h2{font-family:Georgia,serif;font-size:27px;margin:0 0 10px}
-.hint{color:var(--muted);line-height:1.55}.error-note{color:#9a2f20}
+.hint{color:var(--muted);line-height:1.55}.error-note{color:#9e2e41}
 #chart{height:510px;width:100%;min-width:0}
 #ridge-state{padding-left:10px;color:var(--accent)}
 .table-wrap,.track-scroll{overflow-x:auto}.leaderboard{width:100%;border-collapse:collapse;font-size:13px}
 .leaderboard th,.leaderboard td{padding:9px;border-bottom:1px solid var(--edge);text-align:left}
-.leaderboard th{color:#514439;background:#f2e5d8;white-space:nowrap}.leaderboard tr[data-brand]{cursor:pointer}
-.leaderboard .priority{background:#e3eee6}.leaderboard tr[data-brand]:hover{background:#d8e7e2}
+.leaderboard th{color:#324861;background:#eaf0f7;white-space:nowrap}.leaderboard tr[data-brand]{cursor:pointer}
+.leaderboard .priority{background:#e3f0f2}.leaderboard tr[data-brand]:hover{background:#d7e8ef}
 .brand-link{background:none;border:0;padding:0;color:var(--accent);text-align:left;text-decoration:underline}
-.contact{margin:13px 0;padding:12px;border-left:3px solid var(--accent);background:#eaf2eb}
+.contact{margin:13px 0;padding:12px;border-left:3px solid var(--accent);background:#e9f3f7}
 .score{display:grid;grid-template-columns:minmax(38px,1fr) auto;align-items:center;gap:8px;font-variant-numeric:tabular-nums;white-space:nowrap}
-.score-track{display:block;height:5px;background:#c9c3b6;overflow:hidden;border-radius:2px}
+.score-track{display:block;height:5px;background:#c4d1df;overflow:hidden;border-radius:2px}
 .score-fill{display:block;height:100%;background:var(--accent)}
 .road-toolbar{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
 .road-toolbar .hint{margin:0}
 .contact a{color:var(--accent);margin-left:8px;overflow-wrap:anywhere}
-.track{position:relative;isolation:isolate;min-width:790px;height:690px;margin-top:14px;border:1px solid #a39383;border-radius:9px;overflow:hidden;background:#66615c url(road.jpg) center/100% 100%}
-.track::after{content:'';position:absolute;z-index:-1;inset:4% 9% 5% auto;width:3px;background:repeating-linear-gradient(#fff0daaa 0 7px,#241d16aa 7px 14px)}
+.track{position:relative;isolation:isolate;min-width:790px;height:690px;margin-top:14px;border:1px solid #94a4b9;border-radius:9px;overflow:hidden;background:#526071 url(road.jpg) center/100% 100%;background-blend-mode:luminosity}
+.track::after{content:'';position:absolute;z-index:-1;inset:4% 9% 5% auto;width:3px;background:repeating-linear-gradient(#f6faffbb 0 7px,#17243aaa 7px 14px)}
 .racer{position:absolute;top:var(--lane);left:var(--finish);width:var(--length);transform:translateY(-30%);animation:drive 5s cubic-bezier(.15,.66,.23,1) both}
-.racer-label{position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:6px;width:max-content;padding:3px 6px;border:1px solid #fff8e552;border-radius:4px;background:#fff5e9;color:#252728;box-shadow:0 2px 6px #201d1859;font-size:11px;line-height:1.25}
-.racer-rank{font-weight:750;color:#125950}
+.racer-label{position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:6px;width:max-content;padding:3px 6px;border:1px solid #e8f4ff66;border-radius:4px;background:#f7fbff;color:#14243b;box-shadow:0 2px 6px #0b162f59;font-size:11px;line-height:1.25}
+.racer-rank{font-weight:750;color:#15566d}
 .racer-name{font-weight:650;max-width:160px;overflow-wrap:anywhere}
-.racer-score{font-variant-numeric:tabular-nums;color:#5b514b;white-space:nowrap}
-.car{position:relative;height:21px;background:linear-gradient(180deg,#ffffff80,transparent 35%,#00000050),var(--paint);border-radius:var(--radius) 43% 42% var(--radius);box-shadow:0 3px 6px #24190fcc;border:1px solid #241f1a}
-.car::before,.car::after{content:'';position:absolute;left:15%;width:67%;height:3px;background:linear-gradient(90deg,#24211e 0 19%,transparent 19% 80%,#24211e 80%);border-radius:3px}
+.racer-score{font-variant-numeric:tabular-nums;color:#506079;white-space:nowrap}
+.car{position:relative;height:21px;background:linear-gradient(180deg,#ffffff80,transparent 35%,#0b142a50),var(--paint);border-radius:var(--radius) 43% 42% var(--radius);box-shadow:0 3px 6px #0a1327cc;border:1px solid #182437}
+.car::before,.car::after{content:'';position:absolute;left:15%;width:67%;height:3px;background:linear-gradient(90deg,#172437 0 19%,transparent 19% 80%,#172437 80%);border-radius:3px}
 .car::before{top:-2px}.car::after{bottom:-2px}
-.car-roof{position:absolute;left:23%;top:3px;width:var(--roof);height:13px;background:linear-gradient(90deg,#303635 0 21%,var(--paint) 21% 68%,#313535 68%);border:1px solid #ffffff90;border-radius:28% 47% 46% 28%}
-.car-lights{position:absolute;inset:4px 3px auto auto;width:4px;height:3px;border-radius:50%;background:#fff4c9;box-shadow:0 8px #fff4c9}
+.car-roof{position:absolute;left:23%;top:3px;width:var(--roof);height:13px;background:linear-gradient(90deg,#283b53 0 21%,var(--paint) 21% 68%,#283b53 68%);border:1px solid #ffffff90;border-radius:28% 47% 46% 28%}
+.car-lights{position:absolute;inset:4px 3px auto auto;width:4px;height:3px;border-radius:50%;background:#ecf8ff;box-shadow:0 8px #ecf8ff}
 
 @keyframes drive{from{left:-7%}to{left:var(--finish)}}
 @media(prefers-reduced-motion:reduce){.racer{animation:none}}
@@ -200,10 +200,10 @@ javascript <- "
         return;
       }
       message.layout = Object.assign({
-        paper_bgcolor:'#fff9f3', plot_bgcolor:'#fff9f3', margin:{l:65,r:35,t:25,b:75},
-        font:{color:'#252728',family:'system-ui, sans-serif'},
+        paper_bgcolor:'#ffffff', plot_bgcolor:'#ffffff', margin:{l:65,r:35,t:25,b:75},
+        font:{color:'#14243b',family:'system-ui, sans-serif'},
         legend:{orientation:'h',x:.5,xanchor:'center',y:-.12,font:{size:12}},
-        hoverlabel:{bgcolor:'#fff9f3',bordercolor:'#b9a797',font:{color:'#252728'}},
+        hoverlabel:{bgcolor:'#ffffff',bordercolor:'#9babc0',font:{color:'#14243b'}},
         autosize:true
       }, message.layout || {});
       message.config = {responsive:true, displaylogo:false, modeBarButtonsToRemove:['toImage']};
@@ -286,7 +286,7 @@ ui <- fluidPage(
             tags$div(id = "chart", role = "region", `aria-label` = "Visualisation interactive")))),
       tabPanel("Partenaires", value = "partners",
         tags$section(class = "panel-card", tags$h2("Partenaires autonomes"),
-          tags$p(class = "hint", "Les dix partenaires asiatiques sont surlignés en vert pâle. Les alternatives proviennent d’Amérique du Nord. Cliquez sur une entreprise pour afficher ses coordonnées."),
+          tags$p(class = "hint", "Les dix partenaires asiatiques sont surlignés en bleu pétrole clair. Les alternatives proviennent d’Amérique du Nord. Cliquez sur une entreprise pour afficher ses coordonnées."),
           tags$p(class = "hint", "Score sur 100, après normalisation commune aux deux régions. R&D 30 %, sécurité 25 %, durabilité 20 %, gamme électrique 15 %, concessionnaires 10 %."),
           uiOutput("contact"), uiOutput("ranked"))),
       tabPanel("Sur la route", value = "road",

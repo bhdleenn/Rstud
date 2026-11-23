@@ -1,8 +1,8 @@
 road_view <- function(partners) {
   d <- partners[partners$continent == "Asie", ]
   if (!nrow(d)) return(tags$p("Aucun partenaire asiatique admissible."))
-  colors <- c("#e7b697", "#dca75e", "#9fbaeb", "#cd8ba0", "#c7ca91",
-              "#9acec3", "#b9a4d0", "#df8a76", "#a7c097", "#eee3d8")
+  colors <- c("#9bd7de", "#7dbbc8", "#9fbaeb", "#cd8ba0", "#9db4ca",
+              "#9acec3", "#b9a4d0", "#da8ca3", "#94c1a6", "#d9e7f3")
   cars <- lapply(seq_len(nrow(d)), function(i) {
     row <- d[i, ]
     # Le rang fixe la position horizontale. Chaque véhicule dispose de sa voie.
