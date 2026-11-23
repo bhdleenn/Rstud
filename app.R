@@ -60,6 +60,15 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,sans-serif}
 .chart-tools .control.secondary:disabled{opacity:.5;cursor:default}
 .chart-tools .map-credit{font-size:11px;color:var(--muted)}
 .map-credit a{color:var(--accent);text-decoration:underline}
+.map-layers{display:flex;column-gap:10px;align-items:center;flex-wrap:wrap}
+.map-layers .form-group{width:235px}
+.map-layers .selectize-control{margin-bottom:0}
+.map-profile{margin-top:15px;padding:16px;border:1px solid var(--edge);border-radius:8px;background:#f4f8fc}
+.map-profile h3{font-family:Georgia,serif;color:var(--accent);margin:0 0 6px;font-size:23px}
+.company-facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:8px;margin:0}
+.company-facts>div{padding:8px 10px;background:white;border-radius:4px}
+.company-facts dt{font-size:12px;color:var(--muted)}
+.company-facts dd{font-variant-numeric:tabular-nums;margin-top:3px}
 .timeline-slider{width:clamp(110px,19vw,260px)!important;accent-color:var(--accent)}
 
 .chart-header .hint{max-width:55ch;margin-bottom:12px}
@@ -123,7 +132,26 @@ javascript <- "
     const exportImage = document.getElementById('chart-export');
     const stage = document.getElementById('chart-stage');
     const toolStatus = document.getElementById('chart-tool-status');
-    let data = null, generation = 0, timer = null;
+    let data = null, generation = 0, timer = null, showCity = false;
+    const cityOutput = document.getElementById('map_city_profile');
+    new MutationObserver(() => {
+      const profile = cityOutput.querySelector('.map-profile');
+      if (showCity && profile) {
+        showCity = false;
+        profile.scrollIntoView({block:'nearest'});
+      }
+    }).observe(cityOutput, {childList:true});
+    function selectCity(event) {
+      const point = event?.points?.[0];
+      if (!point || !['scattergeo','scattermap'].includes(point.data.type)) return;
+      const representative = point.customdata ?? point.data.customdata?.[point.pointNumber];
+      if (typeof representative === 'string') {
+        const profile = cityOutput.querySelector('.map-profile');
+        if (profile) profile.scrollIntoView({block:'nearest'});
+        else showCity = true;
+        Shiny.setInputValue('map_city', representative, {priority:'event'});
+      }
+    }
     const arrayKeys = ['x','y','z','lat','lon','text','r','theta','customdata'];
     function traces(items) {
       return items.map(item => {
@@ -210,7 +238,11 @@ javascript <- "
       data = message;
       try {
         await Plotly.react(target, traces(message.data), message.layout, message.config);
-        if (version === generation) exportImage.disabled = false;
+        if (version === generation) {
+          target.removeListener('plotly_click', selectCity);
+          target.on('plotly_click', selectCity);
+          exportImage.disabled = false;
+        }
         if (version === generation && message.frames) {
           if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
             state.textContent = 'Fondation jusqu’en ' + message.frames.at(-1).name;
@@ -273,9 +305,16 @@ ui <- fluidPage(
               "Plein écran"),
             conditionalPanel("input.chart_type === 'map'",
               checkboxInput("detail_map", "Fond de carte détaillé"),
-              conditionalPanel("input.detail_map", tags$small(class = "map-credit",
-                tags$a(href = "https://openfreemap.org/", "OpenFreeMap"), " · ",
-                tags$a(href = "https://www.openstreetmap.org/copyright", "© OpenStreetMap")))),
+              conditionalPanel("input.detail_map",
+                tags$div(class = "map-layers",
+                  selectInput("map_layer", "Fond détaillé",
+                    c("OpenStreetMap · OpenFreeMap" = "street", "Satellite · Esri World Imagery" = "satellite")),
+                  conditionalPanel("input.map_layer === 'street'", tags$small(class = "map-credit",
+                    tags$a(href = "https://openfreemap.org/", "OpenFreeMap"), " · ",
+                    tags$a(href = "https://www.openstreetmap.org/copyright", "© OpenStreetMap"))),
+                  conditionalPanel("input.map_layer === 'satellite'", tags$small(class = "map-credit",
+                    tags$a(href = "https://www.arcgis.com/home/item.html?id=10df2279f9684e4a9f6a7f08febac2a9",
+                      "Esri World Imagery"), " · Vantor, Earthstar Geographics et GIS User Community"))))),
             tags$div(id = "ridge-controls", class = "control-group", hidden = NA,
               tags$button(type = "button", id = "replay-ridge", class = "control", "Rejouer · 5 s"),
               tags$input(id = "ridge-slider", class = "timeline-slider", type = "range",
@@ -283,7 +322,8 @@ ui <- fluidPage(
               tags$span(id = "ridge-state"))),
           tags$div(id = "chart-tool-status", class = "error-note", role = "status"),
           tags$div(id = "chart-stage", class = "chart-stage",
-            tags$div(id = "chart", role = "region", `aria-label` = "Visualisation interactive")))),
+            tags$div(id = "chart", role = "region", `aria-label` = "Visualisation interactive")),
+          conditionalPanel("input.chart_type === 'map'", uiOutput("map_city_profile")))),
       tabPanel("Partenaires", value = "partners",
         tags$section(class = "panel-card", tags$h2("Partenaires autonomes"),
           tags$p(class = "hint", "Les dix partenaires asiatiques sont surlignés en bleu pétrole clair. Les alternatives proviennent d’Amérique du Nord. Cliquez sur une entreprise pour afficher ses coordonnées."),
@@ -301,6 +341,7 @@ server <- function(input, output, session) {
   import_error <- reactiveVal(if (inherits(initial, "error")) conditionMessage(initial))
   filename <- reactiveVal(basename(default_path))
   selected <- reactiveVal(NULL)
+  map_city <- reactiveVal(NULL)
 
   observeEvent(input$upload, {
     upload <- input$upload
@@ -312,6 +353,7 @@ server <- function(input, output, session) {
     brands(loaded)
     filename(upload$name)
     selected(NULL)
+    map_city(NULL)
     import_error(NULL)
   })
   observeEvent(brands(), {
@@ -336,8 +378,9 @@ server <- function(input, output, session) {
   output$chart_hint <- renderUI({
     id <- req(input$chart_type)
     description <- descriptions[[id]]
-    if (id == "map" && !isTRUE(input$detail_map)) {
-      description <- paste(description, "Faites glisser le globe pour le faire pivoter.")
+    if (id == "map") {
+      description <- paste(description, "Cliquez sur un point pour consulter les entreprises de la ville.")
+      if (!isTRUE(input$detail_map)) description <- paste(description, "Faites glisser le globe pour le faire pivoter.")
     }
     tags$div(tags$h2(chart_names[match(id, chart_ids)]), tags$p(class = "hint", description))
   })
@@ -355,8 +398,33 @@ server <- function(input, output, session) {
     req(input$section == "charts")
     id <- req(input$chart_type)
     d <- filtered()
-    chart <- if (id == "map") map_chart(d, detailed = isTRUE(input$detail_map)) else charts[[id]](d)
+    chart <- if (id == "map") {
+      map_chart(d, detailed = isTRUE(input$detail_map), satellite = identical(input$map_layer, "satellite"))
+    } else charts[[id]](d)
     session$sendCustomMessage("cockpit-chart", chart)
+  })
+  observeEvent(input$region, map_city(NULL), ignoreInit = TRUE)
+  observeEvent(input$map_city, {
+    id <- input$map_city
+    if (is.character(id) && length(id) == 1L && id %in% filtered()$brand_id) map_city(id)
+  })
+  city_rows <- reactive(city_companies(filtered(), req(map_city())))
+  output$map_city_profile <- renderUI({
+    companies <- city_rows()
+    req(nrow(companies) > 0L)
+    sorted_names <- make.unique(companies$brand_name)
+    tags$section(class = "map-profile",
+      tags$h3(paste(companies$city[1L], companies$country[1L], sep = " · ")),
+      tags$p(class = "hint", sprintf("%d entreprise(s) dans la sélection", nrow(companies))),
+      selectInput("map_company", "Entreprise", setNames(companies$brand_id, sorted_names)),
+      uiOutput("map_company_profile")
+    )
+  })
+  output$map_company_profile <- renderUI({
+    companies <- city_rows()
+    req(nrow(companies) > 0L)
+    index <- match(input$map_company, companies$brand_id)
+    company_profile(companies[if (length(index) && !is.na(index)) index else 1L, , drop = FALSE])
   })
   ranking <- reactive(rank_partners(req(brands())))
   observeEvent(input$partner_id, {

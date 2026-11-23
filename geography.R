@@ -1,16 +1,24 @@
-map_chart <- function(d, detailed = FALSE) {
-  locations <- aggregate(
-    list(brands = d$brand_id),
-    d[c("city", "country", "continent", "latitude", "longitude")], length
-  )
+location_fields <- c("city", "country", "continent")
+
+map_chart <- function(d, detailed = FALSE, satellite = FALSE) {
+  locations <- aggregate(list(members = d$brand_id), d[location_fields], function(ids) {
+    c(representative = ids[1L], count = length(ids))
+  })
+  # Les coordonnées des sièges varient légèrement à l’intérieur d’une même ville.
+  coordinates <- aggregate(d[c("latitude", "longitude")], d[location_fields], mean)
+  locations <- merge(locations, coordinates, by = location_fields)
+  locations$representative <- locations$members[, "representative"]
+  locations$brands <- as.integer(locations$members[, "count"])
   locations <- locations[order(-locations$brands), ]
   traces <- lapply(split(locations, locations$continent), function(group) {
     region <- group$continent[1L]
     list(type = "scattergeo", mode = "markers", name = region,
          lat = group$latitude, lon = group$longitude,
-         text = paste(htmltools::htmlEscape(group$city), htmltools::htmlEscape(group$country), sep = ", "),
-         customdata = group$brands,
-         hovertemplate = "<b>%{text}</b><br>%{customdata} entreprise(s)<extra>%{fullData.name}</extra>",
+         text = paste0("<b>", htmltools::htmlEscape(group$city), ", ",
+                       htmltools::htmlEscape(group$country), "</b><br>",
+                       group$brands, " entreprise(s) · Cliquer pour explorer"),
+         customdata = I(group$representative),
+         hovertemplate = "%{text}<extra>%{fullData.name}</extra>",
          marker = list(size = I(6 + 20 * sqrt(group$brands / max(locations$brands))),
                        color = unname(palette[region]), opacity = .82,
                        line = list(color = "#ffffff", width = 1)))
@@ -20,10 +28,18 @@ map_chart <- function(d, detailed = FALSE) {
       trace$type <- "scattermap"
       trace
     })
+    map <- list(style = "https://tiles.openfreemap.org/styles/positron",
+                center = list(lat = 22, lon = 10), zoom = 0.9)
+    if (satellite) {
+      map$style <- "white-bg"
+      map$layers <- list(list(
+        sourcetype = "raster", below = "traces",
+        source = I("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"),
+        sourceattribution = "Esri, Vantor, Earthstar Geographics, GIS User Community"
+      ))
+    }
     return(list(data = unname(traces), layout = list(
-      margin = list(l = 0, r = 0, t = 4, b = 48),
-      map = list(style = "https://tiles.openfreemap.org/styles/positron",
-                 center = list(lat = 22, lon = 10), zoom = 0.9)
+      margin = list(l = 0, r = 0, t = 4, b = 48), map = map
     )))
   }
   rotation <- list(lon = 15, lat = 25, roll = 0)
@@ -47,7 +63,7 @@ map_chart <- function(d, detailed = FALSE) {
   ))
 }
 
-heatmap_chart <- function(d, detailed = FALSE) {
+heatmap_chart <- function(d) {
   counts <- table(d$continent, d$primary_motorization)
   annotations <- lapply(seq_along(counts), function(i) {
     cell <- arrayInd(i, dim(counts))
@@ -63,4 +79,30 @@ heatmap_chart <- function(d, detailed = FALSE) {
     hovertemplate = "%{y}<br>%{x}<br><b>%{z} marques</b><extra></extra>")),
     layout = list(annotations = annotations, margin = list(l = 145, r = 40, t = 25, b = 105),
                   xaxis = list(tickangle = -20, automargin = TRUE)))
+}
+
+
+city_companies <- function(d, representative) {
+  city <- d[d$brand_id == representative, , drop = FALSE]
+  if (!nrow(city)) return(d[FALSE, , drop = FALSE])
+  matches <- Reduce(`&`, lapply(location_fields, function(field) d[[field]] == city[[field]][1L]))
+  result <- d[matches, , drop = FALSE]
+  result[order(-result$annual_production_units, result$brand_name, result$brand_id), , drop = FALSE]
+}
+
+company_profile <- function(row) {
+  values <- c(
+    "Fondation" = format_number(row$founding_year),
+    "Motorisation" = row$primary_motorization,
+    "Conduite autonome" = if (row$has_autonomous_driving) "Oui" else "Non",
+    "Production annuelle" = paste(format_number(row$annual_production_units), "véhicules"),
+    "Prix moyen" = paste(format_number(row$average_price_eur), "€"),
+    "Budget R&D" = paste(format_number(row$r_and_d_budget_million_eur, 1), "M€")
+  )
+  tags$div(
+    tags$dl(class = "company-facts", lapply(names(values), function(label) {
+      tags$div(tags$dt(label), tags$dd(values[[label]]))
+    })),
+    partner_contact(row)
+  )
 }
