@@ -335,7 +335,11 @@ server <- function(input, output, session) {
   })
   output$chart_hint <- renderUI({
     id <- req(input$chart_type)
-    tags$div(tags$h2(chart_names[match(id, chart_ids)]), tags$p(class = "hint", descriptions[[id]]))
+    description <- descriptions[[id]]
+    if (id == "map" && !isTRUE(input$detail_map)) {
+      description <- paste(description, "Faites glisser le globe pour le faire pivoter.")
+    }
+    tags$div(tags$h2(chart_names[match(id, chart_ids)]), tags$p(class = "hint", description))
   })
   output$market_summary <- renderUI({
     d <- filtered()

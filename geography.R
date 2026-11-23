@@ -26,12 +26,23 @@ map_chart <- function(d, detailed = FALSE) {
                  center = list(lat = 22, lon = 10), zoom = 0.9)
     )))
   }
+  rotation <- list(lon = 15, lat = 25, roll = 0)
+  if (length(unique(locations$continent)) == 1L) {
+    longitude <- locations$longitude * pi / 180
+    rotation$lon <- atan2(mean(sin(longitude)), mean(cos(longitude))) * 180 / pi
+    rotation$lat <- mean(locations$latitude)
+  }
   list(data = unname(traces), layout = list(
-    margin = list(l = 0, r = 0, t = 12, b = 55),
-    geo = list(bgcolor = "#ffffff", projection = list(type = "natural earth"),
-      showland = TRUE, landcolor = "#e4ebf3", showocean = TRUE, oceancolor = "#ffffff",
+    dragmode = "pan",
+    margin = list(l = 12, r = 12, t = 12, b = 58),
+    geo = list(
+      bgcolor = "#ffffff",
+      projection = list(type = "orthographic", rotation = rotation, scale = .96),
+      showland = TRUE, landcolor = "#e4ebf3", showocean = TRUE, oceancolor = "#f0f5fa",
       showcountries = TRUE, countrycolor = "#9daec4", countrywidth = .6,
-      coastlinecolor = "#a3b3c7", showframe = FALSE, lataxis = list(range = c(-59, 85))
+      coastlinecolor = "#a3b3c7", showframe = TRUE, framecolor = "#9daec4", framewidth = 1,
+      lonaxis = list(showgrid = TRUE, gridcolor = "#d4dfea", dtick = 30),
+      lataxis = list(showgrid = TRUE, gridcolor = "#d4dfea", dtick = 30)
     )
   ))
 }
