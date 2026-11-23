@@ -131,6 +131,8 @@ javascript <- "
     const zoom = document.getElementById('chart-fullscreen');
     const exportImage = document.getElementById('chart-export');
     const stage = document.getElementById('chart-stage');
+    const spin = document.getElementById('globe-spin');
+    let spinning = false, spinFrame = null, spinVersion = 0;
     const toolStatus = document.getElementById('chart-tool-status');
     let data = null, generation = 0, timer = null, showCity = false;
     const cityOutput = document.getElementById('map_city_profile');
@@ -141,6 +143,48 @@ javascript <- "
         profile.scrollIntoView({block:'nearest'});
       }
     }).observe(cityOutput, {childList:true});
+    function pauseGlobe() {
+      spinning = false;
+      ++spinVersion;
+      cancelAnimationFrame(spinFrame);
+      spin.setAttribute('aria-pressed', 'false');
+      spin.textContent = 'Animer le globe';
+    }
+    spin.addEventListener('click', () => {
+      if (spinning) { pauseGlobe(); return; }
+      const rotation = target.layout?.geo?.projection?.rotation;
+      if (!rotation) return;
+      spinning = true;
+      const version = ++spinVersion;
+      spin.setAttribute('aria-pressed', 'true');
+      spin.textContent = 'Mettre en pause';
+      const start = performance.now();
+      const initialLon = rotation.lon || 0;
+      let previous = start;
+      async function update(now) {
+        if (version !== spinVersion) return;
+        if (document.hidden || !target.offsetParent) { pauseGlobe(); return; }
+        if (now - previous >= 70) {
+          previous = now;
+          const lon = ((initialLon + (now - start) * .011 + 180) % 360) - 180;
+          try { await Plotly.relayout(target, {'geo.projection.rotation.lon': lon}); }
+          catch (error) { if (version === spinVersion) pauseGlobe(); return; }
+        }
+        if (version === spinVersion) spinFrame = requestAnimationFrame(update);
+      }
+      spinFrame = requestAnimationFrame(update);
+    });
+    stage.addEventListener('pointerdown', pauseGlobe);
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) pauseGlobe();
+    });
+    function alignGlobeCenter(update) {
+      const lat = update['geo.projection.rotation.lat'];
+      const geo = target.layout?.geo;
+      if (Number.isFinite(lat) && geo?.projection?.type === 'orthographic' && geo.center.lat !== lat) {
+        Plotly.relayout(target, {'geo.center.lat':lat}).catch(() => {});
+      }
+    }
     function selectCity(event) {
       const point = event?.points?.[0];
       if (!point || !['scattergeo','scattermap'].includes(point.data.type)) return;
@@ -214,6 +258,8 @@ javascript <- "
     });
     Shiny.addCustomMessageHandler('cockpit-chart', async (message) => {
       const version = ++generation;
+      pauseGlobe();
+      spin.disabled = true;
       cancelAnimationFrame(timer);
       state.textContent = '';
       toolStatus.textContent = '';
@@ -241,7 +287,10 @@ javascript <- "
         if (version === generation) {
           target.removeListener('plotly_click', selectCity);
           target.on('plotly_click', selectCity);
+          target.removeListener('plotly_relayout', alignGlobeCenter);
+          target.on('plotly_relayout', alignGlobeCenter);
           exportImage.disabled = false;
+          spin.disabled = message.layout.geo?.projection?.type !== 'orthographic';
         }
         if (version === generation && message.frames) {
           if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -304,7 +353,11 @@ ui <- fluidPage(
             tags$button(type = "button", id = "chart-fullscreen", class = "control secondary",
               "Plein écran"),
             conditionalPanel("input.chart_type === 'map'",
-              checkboxInput("detail_map", "Fond de carte détaillé"),
+              tags$div(class = "control-group",
+                checkboxInput("detail_map", "Fond de carte détaillé"),
+                conditionalPanel("!input.detail_map", tags$button(type = "button",
+                  id = "globe-spin", class = "control secondary", disabled = NA,
+                  `aria-pressed` = "false", "Animer le globe"))),
               conditionalPanel("input.detail_map",
                 tags$div(class = "map-layers",
                   selectInput("map_layer", "Fond détaillé",

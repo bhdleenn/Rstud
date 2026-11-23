@@ -53,12 +53,13 @@ map_chart <- function(d, detailed = FALSE, satellite = FALSE) {
     margin = list(l = 12, r = 12, t = 12, b = 58),
     geo = list(
       bgcolor = "#ffffff",
-      projection = list(type = "orthographic", rotation = rotation, scale = .96),
+      center = list(lat = rotation$lat),
+      projection = list(type = "orthographic", rotation = rotation, scale = .92),
       showland = TRUE, landcolor = "#e4ebf3", showocean = TRUE, oceancolor = "#f0f5fa",
       showcountries = TRUE, countrycolor = "#9daec4", countrywidth = .6,
       coastlinecolor = "#a3b3c7", showframe = TRUE, framecolor = "#9daec4", framewidth = 1,
-      lonaxis = list(showgrid = TRUE, gridcolor = "#d4dfea", dtick = 30),
-      lataxis = list(showgrid = TRUE, gridcolor = "#d4dfea", dtick = 30)
+      lonaxis = list(range = c(-180, 180), showgrid = TRUE, gridcolor = "#d4dfea", dtick = 30),
+      lataxis = list(range = c(-90, 90), showgrid = TRUE, gridcolor = "#d4dfea", dtick = 30)
     )
   ))
 }
